@@ -190,16 +190,19 @@ class LiveEncodingTask:
 
         ## BS4K は 60p (プログレッシブ) で放送されているので、インターレース解除を行わず 60fps でエンコードする
         if channel_type == "BS4K":
-            options.append(f'-vf scale={video_width}:{video_height}')
+            #options.append(f'-vf scale={video_width}:{video_height}')
+            options.append(f'-vf scale_vaapi=w={video_width}:h={video_height}')
             options.append(f'-r 60000/1001 -g {int(gop_length_second * 60)}')
         else:
             ## インターレース解除 (60i → 60p (フレームレート: 60fps))
             if QUALITY[quality].is_60fps is True:
-                options.append(f'-vf yadif=mode=1:parity=-1:deint=1,scale={video_width}:{video_height}')
+                #options.append(f'-vf yadif=mode=1:parity=-1:deint=1,scale={video_width}:{video_height}')
+                options.append(f'-vf deinterlace_vaapi=rate=field:auto=1,scale_vaapi=w={video_width}:h={video_height}')
                 options.append(f'-r 60000/1001 -g {int(gop_length_second * 60)}')
             ## インターレース解除 (60i → 30p (フレームレート: 30fps))
             else:
-                options.append(f'-vf yadif=mode=0:parity=-1:deint=1,scale={video_width}:{video_height}')
+                #options.append(f'-vf yadif=mode=0:parity=-1:deint=1,scale={video_width}:{video_height}')
+                options.append(f'-vf deinterlace_vaapi=rate=frame:auto=1,scale_vaapi=w={video_width}:h={video_height}')
                 options.append(f'-r 30000/1001 -g {int(gop_length_second * 30)}')
 
         # 音声
