@@ -96,6 +96,7 @@ RUN apt-get update && \
         cuda-nvrtc-12-8 libnpp-12-8 \
         # AMD GPU 関連のライブラリ
         amf-amdgpu-pro libamdenc-amdgpu-pro libdrm2-amdgpu ocl-icd-libopencl1 rocm-opencl-runtime vulkan-amdgpu-pro \
+        mesa-va-drivers vainfo \
         # Zendriver 用に Google Chrome と日本語フォントをインストール
         google-chrome-stable fonts-vlgothic && \
     # 実行時イメージなので RUN の最後に掃除する
