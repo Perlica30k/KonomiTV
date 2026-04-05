@@ -143,7 +143,8 @@ class LiveEncodingTask:
 
         # 入力
         ## -analyzeduration をつけることで、ストリームの分析時間を短縮できる
-        options.append(f'-f mpegts -analyzeduration {analyzeduration} -i pipe:0')
+        #options.append(f'-f mpegts -analyzeduration {analyzeduration} -i pipe:0')
+        options.append(f'-hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -f mpegts -analyzeduration {analyzeduration} -i pipe:0')
 
         # ストリームのマッピング
         ## 音声切り替えのため、主音声・副音声両方をエンコード後の TS に含む
@@ -159,13 +160,15 @@ class LiveEncodingTask:
         # 映像
         ## コーデック
         if QUALITY[quality].is_hevc is True:
-            options.append('-vcodec libx265')  # H.265/HEVC (通信節約モード)
+            #options.append('-vcodec libx265')  # H.265/HEVC (通信節約モード)
+            options.append('-vcodec hevc_vaapi')
         else:
-            options.append('-vcodec libx264')  # H.264
+            #options.append('-vcodec libx264')  # H.264
+            options.append('-vcodec h264_vaapi')
 
         ## ビットレートと品質
         options.append(f'-flags +cgop -vb {QUALITY[quality].video_bitrate} -maxrate {QUALITY[quality].video_bitrate_max}')
-        options.append('-preset veryfast -aspect 16:9')
+        options.append('-aspect 16:9')#('-preset veryfast -aspect 16:9')
         if QUALITY[quality].is_hevc is True:
             options.append('-profile:v main')
         else:
